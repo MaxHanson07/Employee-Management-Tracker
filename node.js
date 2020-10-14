@@ -57,14 +57,13 @@ function main() {
 function view() {
 
   var query = "SELECT * FROM employee, role, department ";
-  query += "WHERE employee.role_id = role.id ";
-  query += "AND employee.department_id = department.id";
+  // query += "WHERE employee.role_id = role.id ";
+  // query += "AND role.department_id = department.id";
 
   connection.query(query, function (err, res) {
     console.table(res)
     for (var i = 0; i < res.length; i++) {
-      console.log(
-        i + 1 + ".) " +
+      console.table(
         "Id: " +
         res[i].id +
         " First_name: " +
@@ -74,15 +73,13 @@ function view() {
         " || Role: " +
         res[i].title +
         " || Deparment_id: " +
-        res[i].department +
+        res[i].department_id +
         " || Salary: " +
-        res[i].salary +
-        " || Manager_id: " +
-        res[i].manager
-
+        res[i].salary
       );
     }
   });
+  main();
 }
 
 function add() {
@@ -130,7 +127,7 @@ function createEmployee() {
       {
         name: "role",
         type: "input",
-        message: "What is their role?"
+        message: "What is the id# of their role?"
       }
     ])
     .then(function (answer) {
@@ -140,12 +137,14 @@ function createEmployee() {
         {
           first_name: answer.first_name,
           last_name: answer.last_name,
-          // role: 50 TODO:
+          role: answer.role
         },
         function (err, res) {
           if (err) throw err;
         }
       );
+
+      main();
 
 
     });
@@ -164,6 +163,11 @@ function createRole() {
         name: "salary",
         type: "input",
         message: "What is the salary of the role?"
+      },
+      {
+        name: "department",
+        type: "input",
+        message: "What is the id number of the department containing this role?"
       }
     ])
     .then(function (answer) {
@@ -173,12 +177,14 @@ function createRole() {
         {
           title: answer.title,
           salary: answer.salary,
+          department_id: answer.department
         },
         function (err, res) {
           if (err) throw err;
         }
       );
     });
+    main();
 }
 
 function createDepartment() {
@@ -202,6 +208,7 @@ function createDepartment() {
         }
       );
     });
+    main();
 }
 
 function update() {
@@ -267,6 +274,7 @@ function updateEmployee() {
         }
       );
     });
+    main();
 }
 
 function updateRole() {
@@ -296,7 +304,7 @@ function updateRole() {
         }
       );
     });
-
+    main();
 }
 
 function updateDeparment() {
@@ -320,6 +328,7 @@ function updateDeparment() {
       }
     );
   });
+  main();
 }
 
 main();

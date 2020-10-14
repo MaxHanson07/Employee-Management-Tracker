@@ -57,8 +57,6 @@ function main() {
 function view() {
 
   var query = "SELECT * FROM employee, role, department ";
-  // query += "WHERE employee.role_id = role.id ";
-  // query += "AND role.department_id = department.id";
 
   connection.query(query, function (err, res) {
     console.table(res)
@@ -145,8 +143,6 @@ function createEmployee() {
       );
 
       main();
-
-
     });
 
 }
@@ -199,7 +195,7 @@ function createDepartment() {
     .then(function (answer) {
 
       var query = connection.query(
-        "INSERT INTO role SET ?",
+        "INSERT INTO department SET ?",
         {
           name: answer.name,
         },
@@ -257,7 +253,7 @@ function updateEmployee() {
       {
         name: "role",
         type: "input",
-        message: "What is their role?"
+        message: "What is the id number of their role?"
       }
     ])
     .then(function (answer) {
@@ -267,7 +263,7 @@ function updateEmployee() {
         {
           first_name: answer.first_name,
           last_name: answer.last_name,
-          // role: 50 TODO:
+          role: answer.role
         },
         function (err, res) {
           if (err) throw err;

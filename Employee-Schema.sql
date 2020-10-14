@@ -9,11 +9,13 @@ CREATE TABLE employee (
   last_name VARCHAR(30) NOT NULL,
   role_id INT NOT NULL,
   manager_id INT NOT NULL
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE role (
@@ -21,7 +23,9 @@ CREATE TABLE role (
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(10,2) NOT NULL,
     department_id INT NOT NULL
+    PRIMARY KEY (id)
 );
+
 
 SELECT * FROM employee;
 SELECT * FROM department;

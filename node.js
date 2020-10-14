@@ -55,10 +55,6 @@ function main() {
 }
 
 function view() {
-  var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary ";
-  query += "FROM employee LEFT JOIN role ON (employee.id = role.id) ";
-  query += "FROM employee LEFT JOIN department ON (role.id = department.id) ";
-  query += "ORDER BY employee.id";
 
   var query = "SELECT * FROM employee, role, department ";
   query += "WHERE employee.id = role.id ";

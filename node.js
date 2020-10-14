@@ -1,6 +1,5 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-const { createPromptModule } = require("inquirer");
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -13,7 +12,7 @@ var connection = mysql.createConnection({
 
   // Your password
   password: "password",
-  database: "top_songsDB"
+  database: "employees_db"
 });
 
 connection.connect(function (err) {
@@ -37,7 +36,7 @@ function main() {
     .then(function (answer) {
       switch (answer.action) {
         case "Add departments, roles, employees":
-          // add();
+          add();
           break;
 
         case "View departments, roles, employees":
@@ -49,7 +48,7 @@ function main() {
           break;
 
         case "Quit":
-          // connection.end();
+          connection.end();
           break;
       }
     });
@@ -67,26 +66,26 @@ function view() {
 
   connection.query(query, function (err, res) {
     console.table(res)
-    // for (var i = 0; i < res.length; i++) {
-    //     console.log(
-    //         i + 1 + ".) " +
-    //         "Id: " +
-    //         res[i].id +
-    //         " First_name: " +
-    //         res[i].first_name +
-    //         " || Last_name " +
-    //         res[i].last_name +
-    //         " || Role: " +
-    //         res[i].title +
-    //         " || Deparment_id: " +
-    //         res[i].department +
-    //         " || Salary: " +
-    //         res[i].salary +
-    //         " || Manager_id: " +
-    //         res[i].manager
+    for (var i = 0; i < res.length; i++) {
+        console.log(
+            i + 1 + ".) " +
+            "Id: " +
+            res[i].id +
+            " First_name: " +
+            res[i].first_name +
+            " || Last_name " +
+            res[i].last_name +
+            " || Role: " +
+            res[i].title +
+            " || Deparment_id: " +
+            res[i].department +
+            " || Salary: " +
+            res[i].salary +
+            " || Manager_id: " +
+            res[i].manager
 
-    //     );
-    // }
+        );
+    }
   });
 }
 

@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/MaxHanson07/Employee-Management-Tracker#readme",
   "dependencies": {
-    "inquirer": "^7.3.3"
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {}
 }

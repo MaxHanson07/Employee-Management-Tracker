@@ -1,107 +1,260 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+const { createPromptModule } = require("inquirer");
 
 var connection = mysql.createConnection({
-    host: "localhost",
+  host: "localhost",
 
-    // Your port; if not 3306
-    port: 3306,
+  // Your port; if not 3306
+  port: 3306,
 
-    // Your username
-    user: "root",
+  // Your username
+  user: "root",
 
-    // Your password
-    password: "password",
-    database: "top_songsDB"
+  // Your password
+  password: "password",
+  database: "top_songsDB"
 });
 
 connection.connect(function (err) {
-    if (err) throw err;
-    main();
+  if (err) throw err;
 });
 
 function main() {
-    console.log("main");
-    inquirer
-        .prompt({
-            name: "action",
-            type: "rawlist",
-            message: "What would you like to do?",
-            choices: [
-                "Add departments, roles, employees",
-                "View departments, roles, employees",
-                "Update employee roles",
-                "Quit"
-            ]
-        })
-        .then(function (answer) {
-            switch (answer.action) {
-                case "Add departments, roles, employees":
-                    // add();
-                    break;
+  console.log("main");
+  inquirer
+    .prompt({
+      name: "action",
+      type: "rawlist",
+      message: "What would you like to do?",
+      choices: [
+        "Add departments, roles, employees",
+        "View departments, roles, employees",
+        "Update employee roles",
+        "Quit"
+      ]
+    })
+    .then(function (answer) {
+      switch (answer.action) {
+        case "Add departments, roles, employees":
+          // add();
+          break;
 
-                case "View departments, roles, employees":
-                    view();
-                    break;
+        case "View departments, roles, employees":
+          view();
+          break;
 
-                case "Update employee roles":
-                    // update();
-                    break;
+        case "Update employee roles":
+          // update();
+          break;
 
-                case "Quit":
-                    // connection.end();
-                    break;
-            }
-        });
-}
-
-function view() {
-    var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary ";
-    query += "FROM employee INNER JOIN role ON (employee.id = role.id AND top_albums.year) ";
-    query += "FROM employee INNER JOIN department ON (employee.id = department.id AND top_albums.year) ";
-    query += "ORDER BY employee.id";
-
-    connection.query(query, function (err, res) {
-        for (var i = 0; i < res.length; i++) {
-            console.log(
-                i + 1 + ".) " +
-                "Year: " +
-                res[i].id +
-                " Album Position: " +
-                res[i].first_name +
-                " || Artist: " +
-                res[i].last_name +
-                " || Song: " +
-                res[i].title +
-                " || Album: " +
-                res[i].department +
-                " || Song: " +
-                res[i].salary +
-                " || Song: " +
-                res[i].manager
-                
-            );
-        }
+        case "Quit":
+          // connection.end();
+          break;
+      }
     });
 }
 
+function view() {
+  var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary ";
+  query += "FROM employee LEFT JOIN role ON (employee.id = role.id) ";
+  query += "FROM employee LEFT JOIN department ON (role.id = department.id) ";
+  query += "ORDER BY employee.id";
+
+  var query = "SELECT * FROM employee, role, department ";
+  query += "WHERE employee.id = role.id ";
+  query += "AND employee.id = department.id";
+
+  connection.query(query, function (err, res) {
+    console.table(res)
+    // for (var i = 0; i < res.length; i++) {
+    //     console.log(
+    //         i + 1 + ".) " +
+    //         "Id: " +
+    //         res[i].id +
+    //         " First_name: " +
+    //         res[i].first_name +
+    //         " || Last_name " +
+    //         res[i].last_name +
+    //         " || Role: " +
+    //         res[i].title +
+    //         " || Deparment_id: " +
+    //         res[i].department +
+    //         " || Salary: " +
+    //         res[i].salary +
+    //         " || Manager_id: " +
+    //         res[i].manager
+
+    //     );
+    // }
+  });
+}
+
 function add() {
-    console.log("Inserting a new product...\n");
-    var query = connection.query(
-      "INSERT INTO employees SET ?",
+  inquirer
+    .prompt({
+      name: "action",
+      type: "rawlist",
+      message: "What would you like to create?",
+      choices: [
+        "Employee",
+        "Role",
+        "Department"
+      ]
+    })
+    .then(function (answer) {
+      switch (answer.action) {
+        case "Employee":
+          createEmployee();
+          break;
+
+        case "Role":
+          createRole();
+          break;
+
+        case "Department":
+          createDepartment();
+          break;
+      }
+    });
+}
+
+function createEmployee() {
+  inquirer
+    .prompt([
       {
-        flavor: "Rocky Road",
-        price: 3.0,
-        quantity: 50
+        name: "first_name",
+        type: "input",
+        message: "What is the employee's first name?"
       },
-      function(err, res) {
+      {
+        name: "last_name",
+        type: "input",
+        message: "What is their last name?"
+      },
+      {
+        name: "role",
+        type: "input",
+        message: "What is their role?"
+      }
+    ])
+    .then(function (answer) {
+
+      var query = connection.query(
+        "INSERT INTO employee SET ?",
+        {
+          first_name: answer.first_name,
+          last_name: answer.last_name,
+          // role: 50 TODO:
+        },
+        function (err, res) {
+          if (err) throw err;
+        }
+      );
+      
+    
+    });
+  
+}
+
+function createRole() {
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        type: "input",
+        message: "What is the title of the role?"
+      },
+      {
+        name: "salary",
+        type: "input",
+        message: "What is the salary of the role?"
+      }
+    ])
+    .then(function (answer) {
+
+      var query = connection.query(
+        "INSERT INTO role SET ?",
+        {
+          title: answer.title,
+          salary: answer.salary,
+        },
+        function (err, res) {
+          if (err) throw err;
+        }
+      );
+    });
+}
+
+function createDepartment() {
+  inquirer
+  .prompt([
+    {
+      name: "name",
+      type: "input",
+      message: "What is the department name?"
+    }
+  ])
+  .then(function (answer) {
+
+    var query = connection.query(
+      "INSERT INTO role SET ?",
+      {
+        name: answer.name,
+      },
+      function (err, res) {
         if (err) throw err;
-        console.log(res.affectedRows + " product inserted!\n");
-        // Call updateProduct AFTER the INSERT completes
-        updateProduct();
       }
     );
-  
-    // logs the actual query being run
-    console.log(query.sql);
+  });
 }
+
+// function update() {
+// inquirer
+// .prompt({
+//   name: "update",
+//   type: "list",
+//   message: "What would you like to update?",
+//   choices: [
+//     "Add departments, roles, employees",
+//     "View departments, roles, employees",
+//     "Update employee roles",
+//     "Quit"
+// ]
+// })
+// .then(function (answer) {
+// switch (answer.action) {
+//     case "Add departments, roles, employees":
+//         // add();
+//         break;
+
+//     case "View departments, roles, employees":
+//         view();
+//         break;
+
+//     case "Update employee roles":
+//         // update();
+//         break;
+
+//     case "Quit":
+//         // connection.end();
+//         break;
+// }
+// var query = connection.query(
+//   "UPDATE products SET ? WHERE ?",
+//   [
+//     {
+//       quantity: 100
+//     },
+//     {
+//       flavor: "Rocky Road"
+//     }
+//   ],
+//   function(err, res) {
+//     if (err) throw err;
+//   }
+// );
+
+// }
+
+main();

@@ -59,7 +59,6 @@ function view() {
   var query = "SELECT * FROM employee, role, department ";
 
   connection.query(query, function (err, res) {
-    console.table(res)
     for (var i = 0; i < res.length; i++) {
       console.table(
         "Id: " +
@@ -129,13 +128,14 @@ function createEmployee() {
       }
     ])
     .then(function (answer) {
+      console.log("answer.first_name: " + answer.first_name)
 
       var query = connection.query(
         "INSERT INTO employee SET ?",
         {
-          first_name: answer.first_name,
+          first_name: answer.first_name,        
           last_name: answer.last_name,
-          role: answer.role
+          role_id: answer.role
         },
         function (err, res) {
           if (err) throw err;
@@ -179,8 +179,9 @@ function createRole() {
           if (err) throw err;
         }
       );
+      main();
     });
-    main();
+   
 }
 
 function createDepartment() {
@@ -203,8 +204,9 @@ function createDepartment() {
           if (err) throw err;
         }
       );
+      main();
     });
-    main();
+   
 }
 
 function update() {
